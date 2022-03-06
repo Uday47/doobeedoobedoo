@@ -58,9 +58,10 @@ def preprocessvideo(SEQUENCE_LENGTH, VIDEO_PATH, FRAME_DES):
     frame_number = frame_num
     cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
     success, image = cap.read()
+    cv2.imwrite(os.path.join(FRAME_DES,"snap.jpg"), image) ####
     trimmed_video.append(image)
     out = cv2.VideoWriter('trimmed_video.avi',cv2.VideoWriter_fourcc(*'MJPG'), TRIM_FRAME_RATE, trimmed_video[0].shape[:2][::-1])
-    print(trimmed_video[0].shape[:2])
+    # print(trimmed_video[0].shape[:2])
     for i in range(TRIM_FRAME_RATE):
     	out.write(trimmed_video[0])
     img1 = cv2.resize(image, (IM_SIZE,IM_SIZE))
@@ -69,6 +70,7 @@ def preprocessvideo(SEQUENCE_LENGTH, VIDEO_PATH, FRAME_DES):
             frame_number += skip
             cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
             success, image = cap.read()
+            cv2.imwrite(os.path.join(FRAME_DES,"snap" + str(count)) + ".jpg", image) ####
             trimmed_video.append(image)
             for i in range(TRIM_FRAME_RATE):
             	out.write(trimmed_video[count])
@@ -94,7 +96,7 @@ def preprocessvideo(SEQUENCE_LENGTH, VIDEO_PATH, FRAME_DES):
     seq_image = torch.stack(seq_img)
     seq_image = seq_image.reshape(NUM_CHANNELS, SEQUENCE_LENGTH, IM_SIZE, IM_SIZE)
     seq_image = seq_image.reshape([1, NUM_CHANNELS, SEQUENCE_LENGTH, IM_SIZE, IM_SIZE])
-    return seq_image
+    return seq_image, trimmed_video
 
 
 def infercrime(SEQ_IMAGE, MODEL_PATH):
