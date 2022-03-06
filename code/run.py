@@ -6,7 +6,7 @@ import tempfile
 SEQUENCE_LENGTH = 16
 VIDEO_PATH = r"C:/sih/videos/Abuse007_x264_SparkVideo.mp4"
 FRAME_DES = r"C:/sih/videos/"
-MODEL_PATH = r"C:/sih/models/c3d_11_0.01.h5"
+MODEL_PATH = r"C:\sih\models\c3d_10 (1).h5"
 
 # StreamLit App
 
@@ -20,8 +20,9 @@ if uploaded_file is not None:
 	tfile = tempfile.NamedTemporaryFile(delete=False) 
 	tfile.write(video_file)
 
-	SEQ_IMAGE = preprocessvideo(SEQUENCE_LENGTH = SEQUENCE_LENGTH, VIDEO_PATH = tfile.name, FRAME_DES = FRAME_DES)
+	SEQ_IMAGE, snaps = preprocessvideo(SEQUENCE_LENGTH = SEQUENCE_LENGTH, VIDEO_PATH = tfile.name, FRAME_DES = FRAME_DES)
 	CLASS = infercrime(SEQ_IMAGE = SEQ_IMAGE, MODEL_PATH = MODEL_PATH)
 	PREDICTION = "Crime Event: " + CLASS.upper()
 	st.subheader(PREDICTION)
-	# st.subheader(CLASS)
+	st.subheader("Snapshots of " + CLASS.upper())
+	st.image(snaps)
